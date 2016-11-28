@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+
+  web:
+    hostname: 'web-phreportes'
+    container_name : web-phreportes
+    image: webdevops/php-nginx:ubuntu-16.04
+    volumes:
+      - ./appp:/app
+    links:
+      - database:database
+    working_dir: /app
+    environment:
+      - WEB_DOCUMENT_INDEX=index.html
+    ports:
+      - 5000:80
+
+  database:
+    hostname: 'db-phreportes'
+    container_name : db-phreportes
+    image: mysql
+    volumes:
+      - ./.database:/var/lib/mysql
+      - ./recover/back:/docker-entrypoint-initdb.d
+    ports:
+      - 3200:3306
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=db-phreportes
+      - MYSQL_DATABASE=db-phreportes
+      - COMPOSE_PROJECT_NAME=db-phreportes
+      - MYSQL_ROOT_PASSWORD=db-phreportes
+      - MYSQL_ALLOW_EMPTY_PASSWORD=FALSE
+      - MYSQL_RANDOM_ROOT_PASSWORD=db-phreportes
+    restart: always
